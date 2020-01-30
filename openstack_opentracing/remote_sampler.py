@@ -22,7 +22,7 @@ from threading import Lock
 from tornado.httputil import url_concat
 import random, json, requests
 import eventlet
-import httplib
+import http.client
 
 ZERO_SAMPLING_PROBABILITY = 0.0
 
@@ -113,7 +113,7 @@ class EventletRemoteControlledSampler(Sampler):
         try:
             # Using httplib because we want to skip the span recording (requests library is monkey patched)
             url = '/sampling?service=%s' % (self.service_name)
-            conn = httplib.HTTPConnection(self.local_agent_sampling_host, port=self.local_agent_sampling_port)
+            conn = http.client.HTTPConnection(self.local_agent_sampling_host, port=self.local_agent_sampling_port)
             conn.request('GET', url)
             text = conn.getresponse().read().decode('utf-8')
             #response = requests.get(url)
